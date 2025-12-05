@@ -1,6 +1,9 @@
 Relatório: Simulador de Sistema de Arquivos
+
 Alunos: Rodrigo Morais Herrmann e Lorrân Brito da Silva.
+
 Disciplina: Sistemas Operacionais
+
 Data: 05/12/2025
 
 Resumo
