@@ -1,5 +1,7 @@
 Relatório: Simulador de Sistema de Arquivos
-Alunos: [Seu Nome] e [Nome da Dupla] Disciplina: Sistemas Operacionais Data: 05/12/2025
+Alunos: Rodrigo Morais Herrmann e Lorrân Brito da Silva.
+Disciplina: Sistemas Operacionais
+Data: 05/12/2025
 
 Resumo
 Este trabalho apresenta o desenvolvimento de um simulador de sistema de arquivos em Java. O projeto visa demonstrar de forma prática como sistemas operacionais gerenciam a hierarquia de dados e a integridade das operações através de técnicas de Journaling.
@@ -69,7 +71,7 @@ IDE Java (Eclipse, IntelliJ) ou terminal.
 
 Passo a Passo de Execução:
 
-Clone o repositório: git clone [SEU LINK DO GITHUB AQUI]
+Clone o repositório: git clone https://github.com/devrodofc/Trabalho-Sistemas-Operacionais-2025.2
 
 Compile os arquivos: javac *.java
 
@@ -84,6 +86,8 @@ mkdir documentos (Cria uma pasta)
 cd documentos (Entra na pasta)
 
 touch nota.txt (Cria um arquivo)
+
+rm (remove uma pasta ou um arquivo)
 
 ls (Lista o conteúdo)
 
