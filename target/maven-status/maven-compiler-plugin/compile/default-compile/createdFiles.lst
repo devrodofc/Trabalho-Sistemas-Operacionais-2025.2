@@ -1,0 +1,10 @@
+main\java\com\exemplo\filesystem\journal\JournalOp.class
+main\java\com\exemplo\filesystem\fs\FileNode.class
+main\java\com\exemplo\filesystem\journal\JournalEntry.class
+main\java\com\exemplo\filesystem\App.class
+main\java\com\exemplo\filesystem\shell\Shell.class
+main\java\com\exemplo\filesystem\fs\FileSystemEntry.class
+main\java\com\exemplo\filesystem\core\FileSystemSimulator.class
+main\java\com\exemplo\filesystem\Main.class
+main\java\com\exemplo\filesystem\journal\Journal.class
+main\java\com\exemplo\filesystem\fs\DirectoryNode.class
