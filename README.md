@@ -1,175 +1,106 @@
+Relatório: Simulador de Sistema de Arquivos
+Alunos: [Seu Nome] e [Nome da Dupla] Disciplina: Sistemas Operacionais Data: 05/12/2025
 
-# 📄 **README – Simulador de Sistema de Arquivos com Journaling**
+Resumo
+Este trabalho apresenta o desenvolvimento de um simulador de sistema de arquivos em Java. O projeto visa demonstrar de forma prática como sistemas operacionais gerenciam a hierarquia de dados e a integridade das operações através de técnicas de Journaling.
 
-## 📝 **Título**
+Introdução
+O gerenciamento eficiente de arquivos é crucial para o funcionamento dos sistemas operacionais. Entender como um sistema é montado e organizado é a base para a compreensão da computação moderna. Um sistema de arquivos é a estrutura lógica usada para controlar como os dados são armazenados e recuperados. Sem ele, os dados colocados em um meio de armazenamento seriam um grande corpo de dados sem maneira de saber onde um arquivo termina e o próximo começa.
 
-**Simulador de Sistema de Arquivos com Journaling em Java**
+Parte 1: Introdução ao Sistema de Arquivos com Journaling
+O que é um Sistema de Arquivos? Um sistema de arquivos é um conjunto de estruturas lógicas e rotinas que permitem ao sistema operacional controlar o acesso ao disco rígido. Diferentes sistemas operacionais usam diferentes sistemas de arquivos (como NTFS, EXT4, FAT32), mas todos compartilham objetivos comuns: organização hierárquica e persistência.
 
----
+Conceito de Journaling O Journaling é uma técnica utilizada para garantir a integridade dos dados em caso de falhas (como queda de energia). Antes de realizar qualquer alteração nos dados do disco, o sistema registra a intenção da mudança em um log circular chamado "Journal".
 
-## 📘 **Resumo**
+Propósito: Prevenir a corrupção do sistema de arquivos. Se o sistema travar durante uma operação, ao reiniciar, o SO lê o Journal e pode refazer ou desfazer as operações pendentes.
 
-Este projeto implementa um simulador de sistema de arquivos com funcionalidades básicas de manipulação de arquivos e diretórios, incluindo suporte a **journaling**, um mecanismo utilizado em sistemas reais para manter a integridade do sistema em caso de falhas.
+Tipos de Journaling:
 
-O simulador permite criar, apagar, mover, copiar e listar arquivos e diretórios, utilizando uma interface em modo Shell. Todas as operações realizadas são registradas em um arquivo de log, que é usado para reconstruir o sistema quando o programa é reiniciado.
+Write-ahead logging: A operação é escrita no log antes de ser efetivada no disco. (Modelo utilizado neste simulador).
 
----
+Log-structured: O próprio sistema de arquivos é estruturado como um log contínuo.
 
-## 📌 **1. Introdução**
+Parte 2: Arquitetura do Simulador
+Para simular este ambiente, utilizamos a linguagem Java devido à sua robustez na orientação a objetos.
 
-Sistemas de arquivos são componentes essenciais de qualquer sistema operacional, responsáveis pela organização, armazenamento e recuperação de dados.
+Estrutura de Dados Utilizamos o padrão de projeto Composite para representar a hierarquia:
 
-Um conceito fundamental em sistemas modernos é o **journaling**, uma técnica que registra operações antes que elas sejam executadas, garantindo a consistência dos dados mesmo em caso de desligamentos inesperados ou falhas abruptas.
+FSNode (Abstrata): Representa um nó genérico do sistema.
 
-Este projeto tem como objetivo criar um simulador simples que permita explorar, de forma prática, como um sistema de arquivos funciona internamente e como o journaling auxilia na robustez do sistema.
+Directory: Um nó que pode conter uma lista de filhos (List<FSNode> children).
 
----
+FileNode: Um nó folha que contém dados (neste caso, uma String simulando o conteúdo).
 
-## 🎯 **2. Objetivo**
+Virtual Disk: O estado completo da árvore de diretórios é serializado em um arquivo binário (virtual_disk.ser), simulando o disco físico.
 
-Desenvolver um simulador de sistema de arquivos em Java com as seguintes capacidades:
+Implementação do Journaling O Journaling foi implementado através da classe Journal. Toda vez que um comando de escrita (como mkdir, rm, cp) é invocado, o sistema:
 
-* Manipulação de arquivos e diretórios:
+Abre o arquivo de log (filesystem_journal.log).
 
-  * Criar e remover arquivos
-  * Criar e remover diretórios
-  * Renomear arquivos e diretórios
-  * Copiar arquivos e diretórios
-  * Listar conteúdo de diretórios
+Escreve a operação pretendida e o alvo (timestamp + comando).
 
-* Implementação de um sistema de **Journaling**:
+Executa a operação na memória.
 
-  * Registro de todas as operações
-  * Reconstrução do estado do sistema no início da execução
+Persiste o estado no arquivo de "disco virtual".
 
-* Criar um ambiente Shell para interação com o usuário, simulando comandos de um sistema operacional.
+Parte 3: Implementação em Java
+O projeto foi dividido nas seguintes classes principais:
 
----
+FileSystemSimulator (Main): Implementa o modo Shell (CLI). Ele roda um loop infinito esperando comandos do usuário (mkdir, ls, etc.) e invoca o motor do sistema.
 
-## 🧠 **3. Metodologia**
+FileSystem: É o controlador. Mantém a referência para o diretório raiz (root) e o diretório atual (currentDirectory). Contém a lógica de:
 
-O projeto foi implementado em **Java**, utilizando um modelo orientado a objetos para representar:
+Navegação: Alterar a referência do currentDirectory.
 
-* Arquivos
-* Diretórios
-* Estrutura hierárquica do sistema de arquivos
-* Mecanismo de journaling
+Manipulação: Adicionar ou remover objetos das listas de filhos.
 
-A aplicação utiliza chamadas de métodos para cada comando (mkdir, touch, rm etc.), e um módulo shell simples interpreta os comandos digitados pelo usuário.
+Persistência: Usa ObjectOutputStream para salvar a árvore de objetos.
 
----
+FileNode e Directory: Classes de modelo que estendem FSNode.
 
-## 📂 **4. Arquitetura do Simulador**
+Journal: Gerencia a escrita no arquivo de texto que serve como log de auditoria.
 
-### 🔧 **4.1 Estruturas de Dados**
+Parte 4: Instalação e Funcionamento
+Requisitos:
 
-O sistema de arquivos é composto pelas classes:
+Java JDK 11 ou superior instalado.
 
-* **FileSystemEntry** — classe abstrata representando tanto arquivos quanto diretórios.
-* **FileNode** — representa um arquivo.
-* **DirectoryNode** — representa um diretório, contendo uma lista de outras entradas.
-* **FileSystemSimulator** — lógica principal das operações.
-* **Journal** — gerencia o arquivo de log (`journal.txt`), gravando e recuperando operações.
-* **Shell** — interface em modo texto para interação com o usuário.
+IDE Java (Eclipse, IntelliJ) ou terminal.
 
----
+Passo a Passo de Execução:
 
-## 📦 **5. Instalação e Funcionamento**
+Clone o repositório: git clone [SEU LINK DO GITHUB AQUI]
 
-### 🔧 5.1 Requisitos
+Compile os arquivos: javac *.java
 
-* **Java 17+**
-* **Apache Maven**
-* Sistema operacional Windows, Linux ou macOS
+Execute a classe principal: java Main
 
-### 📥 5.2 Download do Projeto
+O sistema abrirá um prompt simulado: user@mysystem:/$.
 
-```bash
-git clone https://github.com/SEU_USUARIO/filesystem-simulator.git
-cd filesystem-simulator
-```
+Exemplos de uso:
 
-### 🏗️ 5.3 Compilar e Executar
+mkdir documentos (Cria uma pasta)
 
-```bash
-mvn exec:java
-```
+cd documentos (Entra na pasta)
 
-### 🗂️ 5.4 Estrutura do Projeto
+touch nota.txt (Cria um arquivo)
 
-```
-filesystem-simulator/
- ├── src/main/java/com/exemplo/filesystem/
- │     ├── Main.java
- │     ├── core/FileSystemSimulator.java
- │     ├── fs/
- │     │     ├── FileNode.java
- │     │     ├── DirectoryNode.java
- │     │     └── FileSystemEntry.java
- │     ├── journal/Journal.java
- │     └── shell/Shell.java
- ├── journal.txt
- └── pom.xml
-```
+ls (Lista o conteúdo)
 
-### 💻 5.5 Lista de Comandos Disponíveis
+rename nota.txt nota_final.txt (Renomeia)
 
-| Comando            | Exemplo          | Ação             |
-| ------------------ | ---------------- | ---------------- |
-| `createdir <dir>`      | mkdir /docs      | Cria diretório   |
-| `rmdir <dir>`      | rmdir /docs      | Remove diretório |
-| `create <file>`     | touch /a.txt     | Cria arquivo     |
-| `rm <file>`        | rm /a.txt        | Remove arquivo   |
-| `re <orig> <dest>` | mv /a.txt /b.txt | Move/renomeia    |
-| `copy <orig> <dest>` | cp /a /b         | Copia            |
-| `ls <dir>`         | ls /docs         | Lista conteúdo   |
-| `exit`             | —                | Encerra          |
+cp nota_final.txt copia.txt (Copia o arquivo)
 
----
+exit (Sai e salva o estado)
 
-## 📒 **6. Journaling**
+Ao verificar a pasta do projeto, dois arquivos terão sido criados:
 
-O arquivo `journal.txt` registra cada operação executada, como:
+virtual_disk.ser: O "HD" do simulador.
 
-```
-mkdir /docs
-touch /docs/arq.txt
-rm /docs/arq.txt
-```
+filesystem_journal.log: O registro de todas as operações feitas.
 
-Sempre que o simulador é iniciado, ele **reexecuta** cada comando registrado no jornal e restaura a árvore de arquivos exatamente como estava.
+Link do Projeto
+Acesse o código fonte completo em: https://github.com/devrodofc/Trabalho-Sistemas-Operacionais-2025.2
 
-Isso simula um **sistema de arquivos com suporte a journaling**, semelhante a EXT3, NTFS e XFS.
-
----
-
-## 📊 **7. Resultados Esperados**
-
-Com o simulador funcionando, espera-se:
-
-* Melhor compreensão da estrutura de um sistema de arquivos.
-* Visualização prática de como comandos alteram a hierarquia.
-* Entendimento do mecanismo de journaling e recuperação.
-* Ferramenta útil para estudos de Sistemas Operacionais.
-
----
-
-## 👥 **8. Autores**
-
-* Nome 1
-* Nome 2
-
----
-
-## 🔗 **9. Repositório GitHub**
-
-**👉 Adicione aqui o link do seu repositório:**
-
-```
-https://github.com/SEU_USUARIO/filesystem-simulator
-```
-
----
-
-## 📄 **10. Versão para Entregar em PDF**
-
+Resultados Esperados e Conclusão
+O simulador atingiu os objetivos propostos. Foi possível replicar a lógica de árvore de diretórios e a importância do journaling. Ao abrir o arquivo de log gerado, é possível rastrear todas as ações do usuário, demonstrando como sistemas reais mantêm a consistência e auditabilidade dos dados.
